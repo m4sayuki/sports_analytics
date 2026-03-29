@@ -9,3 +9,4 @@ backend/.venv/
 backend/.env.docker.local
 backend/.apprunner-create.json
 backend/.apprunner-source-config.json
+MEMO

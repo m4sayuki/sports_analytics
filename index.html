@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motion Pilot Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="viewer-shell">
+      <section class="viewer-panel">
+        <div class="viewer-head">
+          <div>
+            <p class="eyebrow">ANALYSIS VIEW</p>
+            <h1>フォーム分析ビュー</h1>
+          </div>
+          <div class="tab-row" id="viewTabs">
+            <button class="tab is-active" type="button" data-view="overlay">骨格</button>
+            <button class="tab" type="button" data-view="compare">比較</button>
+            <button class="tab" type="button" data-view="heatmap">ヒート</button>
+          </div>
+        </div>
+
+        <div class="video-meta">
+          <div>
+            <strong id="clipLabel">100m Start / Clip A</strong>
+            <span id="athleteLabel">Aoi Sato</span>
+          </div>
+          <p id="viewModeLabel">Overlay Mode</p>
+        </div>
+
+        <div class="stage" id="stagePanel">
+          <div class="stage-lane">
+            <div class="ghost-skeleton"></div>
+            <p>Current</p>
+          </div>
+          <div class="stage-lane secondary-lane">
+            <div class="ghost-skeleton accent"></div>
+            <p>Reference</p>
+          </div>
+          <div class="playbar">
+            <span>00:08</span>
+            <div class="playbar-track"><div class="playbar-fill" id="playbarFill"></div></div>
+            <span>00:24</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="summary-panel">
+        <article class="metric-card">
+          <span>体幹前傾角</span>
+          <strong id="metricTilt">42°</strong>
+          <small id="metricTiltDelta">理想との差 -4°</small>
+        </article>
+        <article class="metric-card warm">
+          <span>接地時間</span>
+          <strong id="metricGround">0.14s</strong>
+          <small id="metricGroundDelta">前回より -0.02s</small>
+        </article>
+        <article class="insight-card">
+          <p class="eyebrow small">INSIGHT</p>
+          <strong id="insightTitle">1歩目で上体が少し早く起きる</strong>
+          <p id="insightBody">ブロック解除後の2フレームだけ頭の高さを維持すると、推進方向が安定しやすくなります。</p>
+        </article>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

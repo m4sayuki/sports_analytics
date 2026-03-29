@@ -108,6 +108,8 @@ export S3_PREFIX=motion-view
 - `backend/app/api/v1/routers/`: CRUD ルーター
 - `backend/alembic/`: Alembic 設定と初期マイグレーション
 - `backend/requirements.txt`: Python 依存関係
+- `backend/Dockerfile`: 本番コンテナ定義
+- `backend/apprunner.yaml`: App Runner 用設定ひな形
 
 ### セットアップ
 
@@ -131,6 +133,32 @@ uvicorn app.main:app --reload
 alembic upgrade head
 ```
 
+### Docker 起動
+
+```bash
+docker build -t sports-analytics-api ./backend
+docker run --rm -p 8000:8000 --env-file ./backend/.env.production.example sports-analytics-api
+```
+
+### ローカル Docker 検証
+
+Docker Desktop を起動したうえで、`backend/.env.docker.local.example` をコピーして使います。
+
+```bash
+cd /Users/mitamasasuke/workspace/sports_analytics/backend
+cp .env.docker.local.example .env.docker.local
+docker build -t sports-analytics-api .
+docker run --rm -p 8000:8000 --env-file ./.env.docker.local sports-analytics-api
+```
+
+補足: コンテナからホストMacの PostgreSQL に接続するため、`DATABASE_URL` は `host.docker.internal` を使っています。
+
+### App Runner 想定
+
+- Container Port: `8000`
+- Health Check Path: `/api/v1/health`
+- 本番環境変数は `backend/.env.production.example` をベースに設定
+
 ### 実装済み API
 
 - `GET /api/v1/health`
@@ -140,41 +168,8 @@ alembic upgrade head
 - `CRUD /api/v1/analysis-sessions/{session_id}/tracks`
 - `CRUD /api/v1/tracks/{track_id}/points`
 
-### ローカル検証コマンド
 
-バックエンドを起動したあと、別ターミナルで次を実行すると最小限の疎通確認ができます。
+### 確認済みデプロイ先
 
-```bash
-curl http://127.0.0.1:8000/api/v1/health
-```
-
-`athletes` を作成する前に、参照先となる `organizations` を1件入れておくと検証がスムーズです。
-
-```bash
-psql -d sports_analytics -c "INSERT INTO organizations (id, name, slug, plan_type, created_at, updated_at) VALUES ('00000000-0000-0000-0000-000000000001', 'Demo Organization', 'demo-org', 'free', NOW(), NOW()) ON CONFLICT (slug) DO NOTHING;"
-```
-
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/athletes \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "organization_id": "00000000-0000-0000-0000-000000000001",
-    "team_id": null,
-    "external_code": "ATH-001",
-    "name": "テスト選手",
-    "kana_name": "テストセンシュ",
-    "birth_date": null,
-    "sex": null,
-    "dominant_side": "right",
-    "position_name": "RW",
-    "height_cm": null,
-    "weight_kg": null,
-    "note": "README検証用"
-  }'
-```
-
-```bash
-curl http://127.0.0.1:8000/api/v1/athletes
-```
-
-補足: `POST /api/v1/athletes` は、事前に `organizations` テーブルへ対象IDのレコードが入っている前提です。初回は `health` 確認後に上の `INSERT` を実行してから `athletes` の検証へ進むのが安全です。
+- App Runner URL: `https://dzmbuju8pw.ap-northeast-1.awsapprunner.com`
+- Health Check: `https://dzmbuju8pw.ap-northeast-1.awsapprunner.com/api/v1/health`

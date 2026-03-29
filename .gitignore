@@ -6,3 +6,6 @@ __pycache__/
 backend/.env
 backend/.venv/
 *.log
+backend/.env.docker.local
+backend/.apprunner-create.json
+backend/.apprunner-source-config.json

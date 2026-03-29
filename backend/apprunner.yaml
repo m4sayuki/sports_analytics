@@ -1,0 +1,15 @@
+version: 1.0
+runtime: python312
+build:
+  commands:
+    build:
+      - pip install -r requirements.txt
+run:
+  runtime-version: 3.12
+  command: sh start.sh
+  network:
+    port: 8000
+    env: PORT
+  env:
+    - name: APP_ENV
+      value: production
